@@ -11,9 +11,13 @@ NOT2 :
 *son kodun ustune bir de blurlama islemi uygulandiktan sonra elde edilen sonuclar 
 daha iyi sonuclar elde ediyo ve renkli qr koda da detect ve decode atabiliyo
 *daha uzak mesafelerdeki qr kodlari tespit edebiliyo 
+*cicikusun videosundaki qr kodu rahat bir sekilde okuyabiliyor
 """
+
+
 import cv2
 from pyzbar.pyzbar import decode
+import numpy as np
 
 def detect_qr_code(frame):
     """
@@ -35,16 +39,35 @@ def detect_qr_code(frame):
     # her bir qr kodu donguyle isleme
     for obj in decode_objects:
         # qr kodun verisini ve konumunu alma
-        data=obj.data.decode('utf-8')
-        rect_points=obj.rect
+        rect=obj.rect
+        # perspektif donusturme islemi
+        points = np.array([rect[:2],[rect[0],rect[1]+rect[3]],[rect[0]+rect[2],rect[1]+rect[3]],[rect[0]+rect[2],rect[1]]],dtype=np.float32)
+        width=max(rect[2],rect[3])
+        height=min(rect[2],rect[3])
 
-        # konumu ve veriyi ekrana yazdirma
-        print("QR kodun verisi:",data)
-        print("QR kodun konumu:",rect_points)
+        # hedef noktalari belirleme
+        dst_points=np.array([[0,0],[0,height],[width,height],[width,0]],dtype=np.float32)
 
-        # qr kod icin dikdortgen ciz
-        cv2.rectangle(frame,(rect_points[0],rect_points[1]),(rect_points[2],rect_points[3]),(0,255,0),2)
+        # perspektif donusum matrislerini hesaplama
+        matrix=cv2.getPerspectiveTransform(points,dst_points)
 
+        # perspektif donusumu uygulama
+        warped_frame=cv2.warpPerspective(frame,matrix,(width,height))
+
+        # QR kodlarini tespit et
+        decode_objects_warped=decode(warped_frame)
+
+        # her bir QR kodunu isleme
+        for obj_warped in decode_objects_warped:
+            # QR kodun verisini ve konumunu alma
+            data=obj_warped.data.decode('utf-8')
+
+            # konumu ve veriyi ekrana yazdirma
+            print("QR kodun verisi:",data)
+            print("QR kodun konumu:",obj_warped.rect)
+
+            # qr kod icin dikdortgen ciz
+            cv2.rectangle(frame,(rect[0],rect[1]),(rect[0]+rect[2],rect[1]+rect[3]),(0,255,0),2)
     return frame
 
 def main():
@@ -52,7 +75,8 @@ def main():
     QR kod tespit edilecek ana kod
     """
 
-    cap=cv2.VideoCapture(0)
+    # girilecek dosyanin pathini buraya ekle
+    cap=cv2.VideoCapture("cicikus_kamikaze.mp4")
 
     while True:
         ret,frame=cap.read()
