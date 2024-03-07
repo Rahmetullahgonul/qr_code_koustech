@@ -18,6 +18,7 @@ daha iyi sonuclar elde ediyo ve renkli qr koda da detect ve decode atabiliyo
 import cv2
 from pyzbar.pyzbar import decode
 import numpy as np
+import time
 
 def detect_qr_code(frame):
     """
@@ -76,16 +77,23 @@ def main():
     """
 
     # girilecek dosyanin pathini buraya ekle
-    cap=cv2.VideoCapture("cicikus_kamikaze.mp4")
+    cap=cv2.VideoCapture(0)
 
     while True:
         ret,frame=cap.read()
         if not ret:
             print("Goruntuye ulasilamiyor!")
             break
+        start = time.perf_counter()
 
         # QR kodlari algila
         frame_with_qr=detect_qr_code(frame)
+
+        # ekrana fps verme
+        end = time.perf_counter()
+        totaltime=end-start
+        fps=1/totaltime
+        cv2.putText(frame, f"FPS:{fps:.2f}", (30, 70), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
         # islenmis cerceveyi goster
         cv2.imshow("QR kod algilandi",frame_with_qr)
