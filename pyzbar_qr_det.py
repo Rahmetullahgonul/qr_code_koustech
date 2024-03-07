@@ -77,7 +77,7 @@ def main():
     """
 
     # girilecek dosyanin pathini buraya ekle
-    cap=cv2.VideoCapture(0)
+    cap=cv2.VideoCapture("cicikus_kamikaze.mp4")
 
     while True:
         ret,frame=cap.read()
