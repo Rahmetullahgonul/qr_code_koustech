@@ -1,3 +1,10 @@
+"""
+qr kodu decode etmek ve tespit etmek amaciyla pyzbar kutuphanesi eklendi
+goruntu siyah beyaza donusturulup ardindan threshold islemi uygulanip
+sonrasinde goruntudeki qr kodlari tespit etmeye calisildi
+ancak renkli qr kodu okumakta sorun yasiyo
+siyah beyaz qr kodlari rahat bi sekilde decode ederken yanlis yerlere detect atiyo
+"""
 import cv2
 from pyzbar.pyzbar import decode
 
@@ -5,10 +12,19 @@ def detect_qr_code(frame):
     """
     QR kodlari tespit et
     """
-    decode_objcets = decode(frame)
+    
+    # siyah beyaza donusturme
+    gray=cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
+
+    # threshold islemi
+    _,thresholded=cv2.threshold(gray,127,255,cv2.THRESH_BINARY)
+
+    # QR kodlari tespi etme
+    decode_objects=decode(thresholded)
+
 
     # her bir qr kodu donguyle isleme
-    for obj in decode_objcets:
+    for obj in decode_objects:
         # qr kodun verisini ve konumunu alma
         data=obj.data.decode('utf-8')
         rect_points=obj.rect
@@ -27,12 +43,12 @@ def main():
     QR kod tespit edilecek ana kod
     """
 
-    cap=cv2.VideoCapture()
+    cap=cv2.VideoCapture(0)
 
     while True:
         ret,frame=cap.read()
         if not ret:
-            print("Goruntu girmen lazim")
+            print("Goruntuye ulasilamiyor!")
             break
 
         # QR kodlari algila
