@@ -1,9 +1,16 @@
 """
-qr kodu decode etmek ve tespit etmek amaciyla pyzbar kutuphanesi eklendi
-goruntu siyah beyaza donusturulup ardindan threshold islemi uygulanip
+NOT1 :
+*qr kodu decode etmek ve tespit etmek amaciyla pyzbar kutuphanesi eklendi
+*goruntu siyah beyaza donusturulup ardindan threshold islemi uygulanip
 sonrasinde goruntudeki qr kodlari tespit etmeye calisildi
-ancak renkli qr kodu okumakta sorun yasiyo
-siyah beyaz qr kodlari rahat bi sekilde decode ederken yanlis yerlere detect atiyo
+*ancak renkli qr kodu okumakta sorun yasiyo
+*siyah beyaz qr kodlari rahat bi sekilde decode ederken yanlis yerlere detect atiyo
+"""
+"""
+NOT2 :
+*son kodun ustune bir de blurlama islemi uygulandiktan sonra elde edilen sonuclar 
+daha iyi sonuclar elde ediyo ve renkli qr koda da detect ve decode atabiliyo
+*daha uzak mesafelerdeki qr kodlari tespit edebiliyo 
 """
 import cv2
 from pyzbar.pyzbar import decode
@@ -12,6 +19,8 @@ def detect_qr_code(frame):
     """
     QR kodlari tespit et
     """
+    # videodaki gurultuyu azaltmak icin blurlama islemi
+    blurred_frame=cv2.GaussianBlur(frame,(5,5),0)
     
     # siyah beyaza donusturme
     gray=cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
