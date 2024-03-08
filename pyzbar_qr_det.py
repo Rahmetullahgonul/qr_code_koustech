@@ -1,3 +1,4 @@
+#https://github.com/koustech/QR_kamikaze.git
 """
 NOT1 :
 *qr kodu decode etmek ve tespit etmek amaciyla pyzbar kutuphanesi eklendi
