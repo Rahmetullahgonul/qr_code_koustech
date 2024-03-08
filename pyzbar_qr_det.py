@@ -25,8 +25,8 @@ def detect_qr_code(frame):
     QR kodlari tespit et
     """
     # videodaki gurultuyu azaltmak icin blurlama islemi
-    blurred_frame=cv2.GaussianBlur(frame,(5,5),0)
-    
+    blurred_frame=cv2.GaussianBlur(frame,(1,1),0)
+
     # siyah beyaza donusturme
     gray=cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
 
@@ -65,6 +65,7 @@ def detect_qr_code(frame):
 
             # konumu ve veriyi ekrana yazdirma
             print("QR kodun verisi:",data)
+            cv2.putText(frame,(str(data)),(30,120),cv2.FONT_HERSHEY_SIMPLEX,1,(0,0,255),2)
             print("QR kodun konumu:",obj_warped.rect)
 
             # qr kod icin dikdortgen ciz
@@ -79,11 +80,14 @@ def main():
     # girilecek dosyanin pathini buraya ekle
     cap=cv2.VideoCapture("cicikus_kamikaze.mp4")
 
+    paused=False
+
     while True:
-        ret,frame=cap.read()
-        if not ret:
-            print("Goruntuye ulasilamiyor!")
-            break
+        if not paused:
+            ret,frame=cap.read()
+            if not ret:
+                print("Goruntuye ulasilamiyor!")
+                break
         start = time.perf_counter()
 
         # QR kodlari algila
@@ -96,9 +100,16 @@ def main():
         cv2.putText(frame, f"FPS:{fps:.2f}", (30, 70), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
         # islenmis cerceveyi goster
+        """
+        space tusu => videoyu durdur/oynat
+        q tusu => videodan cik
+        """
         cv2.imshow("QR kod algilandi",frame_with_qr)
+        key=cv2.waitKey(1)
+        if key==ord(' '):
+            paused=not paused
 
-        if cv2.waitKey(1) & 0xFF==ord("q"):
+        if key==ord('q'):
             break
 
     cap.release()
