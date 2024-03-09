@@ -23,6 +23,36 @@ isleminden sonra dronla çekilmiş QR kodunu da okuyabilir hale geldi
 *videodaki QR kodu kac kez tespit ettigini terminala yazdiriyorum
 """
 
+"""
+NOT4:
+*blurred_frame=cv2.GaussianBlur(frame,(1,1),0) 
+=> drone 89 kez
+=> cici 214 kez
+=> sufai 0 kez
+=> iku 0 kez
+
+**blurred_frame=cv2.GaussianBlur(frame,(5,5),0) 
+=> drone 89 kez
+=> cici 214 kez
+=> sufai 0 kez
+=> iku 0 kez
+
+"""
+
+"""
+yarin bu hatalarin nedenine de bak! 
+WARNING: decoder/databar.c:1248: _zbar_decode_databar: Assertion "seg->finder >= 0" failed.
+	i=17 f=-1(001) part=1
+WARNING: decoder/databar.c:1248: _zbar_decode_databar: Assertion "seg->finder >= 0" failed.
+	i=9 f=-1(001) part=1
+WARNING: decoder/databar.c:1248: _zbar_decode_databar: Assertion "seg->finder >= 0" failed.
+	i=22 f=-1(001) part=1
+WARNING: decoder/databar.c:1248: _zbar_decode_databar: Assertion "seg->finder >= 0" failed.
+	i=23 f=-1(001) part=1
+WARNING: decoder/databar.c:1248: _zbar_decode_databar: Assertion "seg->finder >= 0" failed.
+	i=30 f=-1(001) part=1
+"""
+
 import cv2
 from pyzbar.pyzbar import decode
 import numpy as np
@@ -30,6 +60,9 @@ import time
 
 # define counter
 counter=0
+# define video path
+#video pathini buraya gir
+video_path= "cicikus_kamikaze.mp4"
 
 def detect_qr_code(frame):
     """
@@ -39,7 +72,7 @@ def detect_qr_code(frame):
     global counter
 
     # videodaki gurultuyu azaltmak icin blurlama islemi
-    blurred_frame=cv2.GaussianBlur(frame,(1,1),0)
+    blurred_frame=cv2.GaussianBlur(frame,(5,5),0)
 
     # siyah beyaza donusturme
     gray=cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
@@ -96,8 +129,10 @@ def main():
     QR kod tespit edilecek ana kod
     """
 
+    global video_path
+
     # girilecek dosyanin pathini buraya ekle
-    cap=cv2.VideoCapture("cicikus_kamikaze.mp4")
+    cap=cv2.VideoCapture(video_path)
 
     paused=False
 
