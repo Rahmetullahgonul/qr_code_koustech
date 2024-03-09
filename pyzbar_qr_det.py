@@ -7,6 +7,7 @@ sonrasinde goruntudeki qr kodlari tespit etmeye calisildi
 *ancak renkli qr kodu okumakta sorun yasiyo
 *siyah beyaz qr kodlari rahat bi sekilde decode ederken yanlis yerlere detect atiyo
 """
+
 """
 NOT2 :
 *son kodun ustune bir de blurlama islemi uygulandiktan sonra elde edilen sonuclar 
@@ -15,16 +16,28 @@ daha iyi sonuclar elde ediyo ve renkli qr koda da detect ve decode atabiliyo
 *cicikusun videosundaki qr kodu rahat bir sekilde okuyabiliyor
 """
 
+"""
+NOT3:
+*thresholded = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 11, 2)
+isleminden sonra dronla çekilmiş QR kodunu da okuyabilir hale geldi
+*videodaki QR kodu kac kez tespit ettigini terminala yazdiriyorum
+"""
 
 import cv2
 from pyzbar.pyzbar import decode
 import numpy as np
 import time
 
+# define counter
+counter=0
+
 def detect_qr_code(frame):
     """
     QR kodlari tespit et
     """
+
+    global counter
+
     # videodaki gurultuyu azaltmak icin blurlama islemi
     blurred_frame=cv2.GaussianBlur(frame,(1,1),0)
 
@@ -32,7 +45,7 @@ def detect_qr_code(frame):
     gray=cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
 
     # threshold islemi
-    _,thresholded=cv2.threshold(gray,127,255,cv2.THRESH_BINARY)
+    thresholded = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 11, 2)
 
     # QR kodlari tespi etme
     decode_objects=decode(thresholded)
@@ -68,6 +81,11 @@ def detect_qr_code(frame):
             print("QR kodun verisi:",data)
             cv2.putText(frame,(str(data)),(30,120),cv2.FONT_HERSHEY_SIMPLEX,1,(0,0,255),2)
             print("QR kodun konumu:",obj_warped.rect)
+
+            # sayac
+            if data!=0:
+                counter=counter+1
+                print(f"Videoda {counter} kez QR kod algilandi ")
 
             # qr kod icin dikdortgen ciz
             cv2.rectangle(frame,(rect[0],rect[1]),(rect[0]+rect[2],rect[1]+rect[3]),(0,255,0),2)
