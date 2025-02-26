@@ -151,7 +151,7 @@ def main():
         end = time.perf_counter()
         totaltime=end-start
         fps=1/totaltime
-        cv2.putText(frame, f"FPS:{fps:.2f}", (30, 70), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+        cv2.putText(frame, f"FPS:{fps:.0f}", (30, 70), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
         # islenmis cerceveyi goster
         """
@@ -159,7 +159,7 @@ def main():
         q tusu => videodan cik
         """
         cv2.imshow("QR kod algilandi",frame_with_qr)
-        key=cv2.waitKey(1)
+        key=cv2.waitKey(15)
         if key==ord(' '):
             paused=not paused
 

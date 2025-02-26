@@ -7,12 +7,19 @@ import time
 counter=0
 # define video path
 #video pathini buraya gir
-video_path= "cicikus_kamikaze.mp4"
+video_path= "iku_kamikaze.mp4"
 
 
 def two_dimensional_otsu_threshold(frame):
     # goruntunun yukseklik ve genislik degeri
     height,width=frame.shape
+
+    # videodaki gurultuyu azaltmak icin blurlama islemi
+    frame=cv2.GaussianBlur(frame,(5,5),0)
+
+    # siyah beyaza donusturme
+    frame=cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
+
 
     # goruntunun histogramini hesapla
     hist=cv2.calcHist([frame],[0],None,[256],[0,256])
@@ -49,6 +56,7 @@ def two_dimensional_otsu_threshold(frame):
         if total_variance>max_variance:
             max_variance=total_variance
             optimal_threshold=t
+
 
     # optiumum esik degerine gore kullanarak goruntuyu isle
     _,processed_frame=cv2.threshold(frame,optimal_threshold,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
@@ -148,7 +156,7 @@ def main():
         q tusu => videodan cik
         """
         cv2.imshow("QR kod algilandi",frame_with_qr)
-        key=cv2.waitKey(30)
+        key=cv2.waitKey(1)
         if key==ord(' '):
             paused=not paused
 

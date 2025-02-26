@@ -1,0 +1,14 @@
+# Kamikaze algoritmas:
+
+QR kod tespit ve decode için kullanılan algoritmalar:
+1)QR kodları tespit ve decode etmek için pythondaki pyzbar kütüphanesi kullanıyorum.
+2)Öncellikle pre process işlemleri için alınan görüntüye blurlama, siyah-beyaza dönüştürme, thresholdlama işlemleri uyguluyorum.
+3)Perspektif dönüşümü uygulayarak oluşabilecek ters açılardaki QR kodları da okumaya çalışıyorum.
+4)QR kod olan framleri döngüye sokarak QR kodun konumunu ve içeriğini çekmeye çalışıyorum.
+5)QR koddan alınan verileri(QR kodun konumu-QR kodun içeriği-kaç kez QR kod okundu-QR kodun etrafına dörtgen atma) işlemlerini uyguluyorum.
+6)Son kullanıcıya girilen görüntünün real time olarak tüm içerikleri ekranda gösteriyorum/yazdırıyorum.
+7)Algoritmanın çalışması için gerekli kütüphaneler;
+-Opencv
+-Pyzbar
+-Numpy
+-Time

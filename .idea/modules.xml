@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/qr_detection.iml" filepath="$PROJECT_DIR$/.idea/qr_detection.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/qr_code_koustech-master.iml" filepath="$PROJECT_DIR$/.idea/qr_code_koustech-master.iml" />
     </modules>
   </component>
 </project>
